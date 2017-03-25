@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace TagLookup
 {
-    public partial class Form1 : Form
+    public partial class TagLookup : Form
     {
-        public Form1()
+        public TagLookup()
         {
             InitializeComponent();
         }
