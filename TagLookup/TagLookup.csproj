@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,15 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TagLookup.cs">
+    <Compile Include="Logger\Logger.cs" />
+    <Compile Include="Containers\Mp3File.cs" />
+    <Compile Include="Main\TagLookup.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TagLookup.Designer.cs">
+    <Compile Include="Main\TagLookup.Designer.cs">
       <DependentUpon>TagLookup.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="Main\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="TagLookup.resx">
+    <EmbeddedResource Include="Main\TagLookup.resx">
       <DependentUpon>TagLookup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -77,7 +80,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="Main\App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

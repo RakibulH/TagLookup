@@ -36,9 +36,9 @@
             this.Log = new System.Windows.Forms.TextBox();
             this.ButtonsContainer = new System.Windows.Forms.Panel();
             this.RunButtonContainer = new System.Windows.Forms.Panel();
-            this.button5 = new System.Windows.Forms.Button();
+            this.RunButton = new System.Windows.Forms.Button();
             this.ClearButtonContainer = new System.Windows.Forms.Panel();
-            this.button4 = new System.Windows.Forms.Button();
+            this.ClearButton = new System.Windows.Forms.Button();
             this.HideLogButtonContainer = new System.Windows.Forms.Panel();
             this.HideLogButton = new System.Windows.Forms.Button();
             this.AddFileButtonContainer = new System.Windows.Forms.Panel();
@@ -109,18 +109,18 @@
             this.LogContainer.Location = new System.Drawing.Point(0, 538);
             this.LogContainer.MinimumSize = new System.Drawing.Size(1159, 152);
             this.LogContainer.Name = "LogContainer";
-            this.LogContainer.Padding = new System.Windows.Forms.Padding(5);
+            this.LogContainer.Padding = new System.Windows.Forms.Padding(5, 0, 5, 5);
             this.LogContainer.Size = new System.Drawing.Size(1159, 152);
             this.LogContainer.TabIndex = 1;
             // 
             // Log
             // 
             this.Log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Log.Location = new System.Drawing.Point(5, 5);
+            this.Log.Location = new System.Drawing.Point(5, 0);
             this.Log.Multiline = true;
             this.Log.Name = "Log";
             this.Log.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.Log.Size = new System.Drawing.Size(1149, 142);
+            this.Log.Size = new System.Drawing.Size(1149, 147);
             this.Log.TabIndex = 0;
             // 
             // ButtonsContainer
@@ -134,48 +134,50 @@
             this.ButtonsContainer.Location = new System.Drawing.Point(151, 487);
             this.ButtonsContainer.MinimumSize = new System.Drawing.Size(1008, 51);
             this.ButtonsContainer.Name = "ButtonsContainer";
-            this.ButtonsContainer.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.ButtonsContainer.Padding = new System.Windows.Forms.Padding(5, 0, 0, 5);
             this.ButtonsContainer.Size = new System.Drawing.Size(1008, 51);
             this.ButtonsContainer.TabIndex = 1;
             // 
             // RunButtonContainer
             // 
-            this.RunButtonContainer.Controls.Add(this.button5);
+            this.RunButtonContainer.Controls.Add(this.RunButton);
             this.RunButtonContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.RunButtonContainer.Location = new System.Drawing.Point(802, 0);
             this.RunButtonContainer.Name = "RunButtonContainer";
-            this.RunButtonContainer.Size = new System.Drawing.Size(201, 51);
+            this.RunButtonContainer.Size = new System.Drawing.Size(206, 46);
             this.RunButtonContainer.TabIndex = 6;
             // 
-            // button5
+            // RunButton
             // 
-            this.button5.Dock = System.Windows.Forms.DockStyle.Left;
-            this.button5.Location = new System.Drawing.Point(0, 0);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(201, 51);
-            this.button5.TabIndex = 0;
-            this.button5.Text = "Run";
-            this.button5.UseVisualStyleBackColor = true;
+            this.RunButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.RunButton.Location = new System.Drawing.Point(0, 0);
+            this.RunButton.Name = "RunButton";
+            this.RunButton.Size = new System.Drawing.Size(201, 46);
+            this.RunButton.TabIndex = 0;
+            this.RunButton.Text = "Run";
+            this.RunButton.UseVisualStyleBackColor = true;
+            this.RunButton.Click += new System.EventHandler(this.RunButton_Click);
             // 
             // ClearButtonContainer
             // 
-            this.ClearButtonContainer.Controls.Add(this.button4);
+            this.ClearButtonContainer.Controls.Add(this.ClearButton);
             this.ClearButtonContainer.Dock = System.Windows.Forms.DockStyle.Left;
             this.ClearButtonContainer.Location = new System.Drawing.Point(602, 0);
             this.ClearButtonContainer.Name = "ClearButtonContainer";
             this.ClearButtonContainer.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-            this.ClearButtonContainer.Size = new System.Drawing.Size(200, 51);
+            this.ClearButtonContainer.Size = new System.Drawing.Size(200, 46);
             this.ClearButtonContainer.TabIndex = 5;
             // 
-            // button4
+            // ClearButton
             // 
-            this.button4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button4.Location = new System.Drawing.Point(0, 0);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(195, 51);
-            this.button4.TabIndex = 0;
-            this.button4.Text = "Clear";
-            this.button4.UseVisualStyleBackColor = true;
+            this.ClearButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ClearButton.Location = new System.Drawing.Point(0, 0);
+            this.ClearButton.Name = "ClearButton";
+            this.ClearButton.Size = new System.Drawing.Size(195, 46);
+            this.ClearButton.TabIndex = 0;
+            this.ClearButton.Text = "Clear";
+            this.ClearButton.UseVisualStyleBackColor = true;
+            this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
             // HideLogButtonContainer
             // 
@@ -184,7 +186,7 @@
             this.HideLogButtonContainer.Location = new System.Drawing.Point(402, 0);
             this.HideLogButtonContainer.Name = "HideLogButtonContainer";
             this.HideLogButtonContainer.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-            this.HideLogButtonContainer.Size = new System.Drawing.Size(200, 51);
+            this.HideLogButtonContainer.Size = new System.Drawing.Size(200, 46);
             this.HideLogButtonContainer.TabIndex = 4;
             // 
             // HideLogButton
@@ -192,10 +194,11 @@
             this.HideLogButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HideLogButton.Location = new System.Drawing.Point(0, 0);
             this.HideLogButton.Name = "HideLogButton";
-            this.HideLogButton.Size = new System.Drawing.Size(195, 51);
+            this.HideLogButton.Size = new System.Drawing.Size(195, 46);
             this.HideLogButton.TabIndex = 0;
             this.HideLogButton.Text = "Hide Log";
             this.HideLogButton.UseVisualStyleBackColor = true;
+            this.HideLogButton.Click += new System.EventHandler(this.HideLogButton_Click);
             // 
             // AddFileButtonContainer
             // 
@@ -204,7 +207,7 @@
             this.AddFileButtonContainer.Location = new System.Drawing.Point(202, 0);
             this.AddFileButtonContainer.Name = "AddFileButtonContainer";
             this.AddFileButtonContainer.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-            this.AddFileButtonContainer.Size = new System.Drawing.Size(200, 51);
+            this.AddFileButtonContainer.Size = new System.Drawing.Size(200, 46);
             this.AddFileButtonContainer.TabIndex = 3;
             // 
             // AddFileButton
@@ -212,10 +215,11 @@
             this.AddFileButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AddFileButton.Location = new System.Drawing.Point(0, 0);
             this.AddFileButton.Name = "AddFileButton";
-            this.AddFileButton.Size = new System.Drawing.Size(195, 51);
+            this.AddFileButton.Size = new System.Drawing.Size(195, 46);
             this.AddFileButton.TabIndex = 0;
             this.AddFileButton.Text = "Add File";
             this.AddFileButton.UseVisualStyleBackColor = true;
+            this.AddFileButton.Click += new System.EventHandler(this.AddFileButton_Click);
             // 
             // AddDirectoryButtonContainer
             // 
@@ -224,7 +228,7 @@
             this.AddDirectoryButtonContainer.Location = new System.Drawing.Point(5, 0);
             this.AddDirectoryButtonContainer.Name = "AddDirectoryButtonContainer";
             this.AddDirectoryButtonContainer.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-            this.AddDirectoryButtonContainer.Size = new System.Drawing.Size(197, 51);
+            this.AddDirectoryButtonContainer.Size = new System.Drawing.Size(197, 46);
             this.AddDirectoryButtonContainer.TabIndex = 0;
             // 
             // AddDirectoryButton
@@ -232,10 +236,12 @@
             this.AddDirectoryButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AddDirectoryButton.Location = new System.Drawing.Point(0, 0);
             this.AddDirectoryButton.Name = "AddDirectoryButton";
-            this.AddDirectoryButton.Size = new System.Drawing.Size(192, 51);
+            this.AddDirectoryButton.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.AddDirectoryButton.Size = new System.Drawing.Size(192, 46);
             this.AddDirectoryButton.TabIndex = 2;
             this.AddDirectoryButton.Text = "Add Directory";
             this.AddDirectoryButton.UseVisualStyleBackColor = true;
+            this.AddDirectoryButton.Click += new System.EventHandler(this.AddDirectoryButton_Click);
             // 
             // TagLookup
             // 
@@ -248,6 +254,8 @@
             this.Controls.Add(this.LogContainer);
             this.Name = "TagLookup";
             this.Text = "TagLookup";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TagLookup_FormClosing);
+            this.Load += new System.EventHandler(this.TagLookup_Load);
             this.SupportedSitesContainer.ResumeLayout(false);
             this.ItemsToProcessQueueContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ItemsToProcessQueue)).EndInit();
@@ -279,9 +287,9 @@
         private System.Windows.Forms.Panel HideLogButtonContainer;
         private System.Windows.Forms.Button HideLogButton;
         private System.Windows.Forms.Panel ClearButtonContainer;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.Panel RunButtonContainer;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button RunButton;
     }
 }
 
