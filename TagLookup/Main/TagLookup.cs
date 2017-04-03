@@ -10,8 +10,9 @@ namespace TagLookup
     public partial class TagLookup : Form
     {
         #region Fields
-        private Logger log;                             // refence to logger singleton
-        private BindingList<Mp3File> itemsToProcess;    // Binded to DataGridView ItemsToProcessQueue 
+        private Logger log;                             // reference to logger singleton
+        private BindingList<Mp3File> itemsToProcess;    // Binded to DataGridView ItemsToProcessQueue
+        private DataProcessor dataProcessor;            // Object that handles all processing of data
         #endregion
 
         #region Startup and Shutdown
@@ -29,6 +30,7 @@ namespace TagLookup
             }
             itemsToProcess = new BindingList<Mp3File>();
             BindItemsToProcessGrid();
+            dataProcessor = new DataProcessor();
         }
 
         private void TagLookup_FormClosing( object sender, FormClosingEventArgs e )
@@ -113,7 +115,7 @@ namespace TagLookup
         /// </summary>
         private void RunButton_Click( object sender, EventArgs e )
         {
-
+            dataProcessor.Process( itemsToProcess );
         }
         #endregion
 
