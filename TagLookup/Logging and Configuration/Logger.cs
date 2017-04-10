@@ -118,15 +118,15 @@ namespace TagLookup
                 return false;
             }
 
-            if( !Directory.Exists( logFileDir ) )
-            {
-                Directory.CreateDirectory( logFileDir );
-            }
-            var logFilePath = Path.Combine( logFileDir, logFileName );
-
-            // Check if writable
             try
             {
+                if( !Directory.Exists( logFileDir ) )
+                {
+                    Directory.CreateDirectory( logFileDir );
+                }
+                var logFilePath = Path.Combine( logFileDir, logFileName );
+            
+                // Check if writable
                 streamWriter = File.CreateText( logFilePath );
                 streamWriter.WriteLine( "{0} {1,-10}",
                     DateTime.Now.ToString(),

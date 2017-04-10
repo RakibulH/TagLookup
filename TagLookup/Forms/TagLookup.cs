@@ -35,9 +35,13 @@ namespace TagLookup
 
         private void TagLookup_FormClosing( object sender, FormClosingEventArgs e )
         {
-            if( log != null )
+            if( Logger.LoggerInstance != null )
             {
-                log.Dispose();
+                Logger.LoggerInstance.Dispose();
+            }
+            if( ExposedTagsConfiguration.ExposedTagsConfigurationInstance != null )
+            {
+                ExposedTagsConfiguration.ExposedTagsConfigurationInstance.Dispose();
             }
         }
         #endregion
@@ -116,6 +120,15 @@ namespace TagLookup
         private void RunButton_Click( object sender, EventArgs e )
         {
             dataProcessor.Process( itemsToProcess );
+        }
+
+        /// <summary>
+        /// Create a dialogue using the Mp3File from the binded grids data source
+        /// </summary>
+        private void ItemsToProcessQueue_CellMouseDoubleClick( object sender, DataGridViewCellMouseEventArgs e )
+        {
+            var mp3FileDialogue = new Mp3FileDialogue( itemsToProcess.ElementAt( e.RowIndex ) );
+            mp3FileDialogue.Show();
         }
         #endregion
 

@@ -101,6 +101,7 @@
             this.ItemsToProcessQueue.RowTemplate.Height = 24;
             this.ItemsToProcessQueue.Size = new System.Drawing.Size(998, 477);
             this.ItemsToProcessQueue.TabIndex = 0;
+            this.ItemsToProcessQueue.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ItemsToProcessQueue_CellMouseDoubleClick);
             // 
             // LogContainer
             // 
