@@ -7,46 +7,23 @@ using System.Xml.Serialization;
 
 namespace TagLookup
 {
-    public class ExposedTagsConfiguration : IDisposable
+    /// <summary>
+    /// Encapsulates common logic for xml configuration file usage
+    /// </summary>
+    public abstract class XmlConfiguration
     {
         #region Fields
-        private static ExposedTagsConfiguration exposedTagsConfigurationInstance = new ExposedTagsConfiguration();
-        private ExposedTags exposedTags;
-        private string configFileName;
-        private string configFileDir;
+        protected string configFileName;
+        protected string configFileDir;
         #endregion
 
-        #region Properties
-        /// <summary>
-        /// Get a reference to the singleton
-        /// </summary>
-        public static ExposedTagsConfiguration ExposedTagsConfigurationInstance
-        {
-            get
-            {
-                return exposedTagsConfigurationInstance;
-            }
-        }
-
-        /// <summary>
-        /// Get a reference to self contained object 
-        /// </summary>
-        public ExposedTags ExposedTags
-        {
-            get
-            {
-                return exposedTagsConfigurationInstance.exposedTags;
-            }
-        }
-        #endregion
-
-        #region Public Methods
+        #region Protected Methods
         /// <summary>
         /// Write to disk before removing all references
         /// </summary>
-        public void Dispose()
+        protected void Dispose( object containedObject, Type objectType )
         {
-            if( exposedTags != null )
+            if( containedObject != null )
             {
                 try
                 {
@@ -56,8 +33,8 @@ namespace TagLookup
                     }
 
                     var path = Path.Combine( configFileDir, configFileName );
-                    var serializer = new XmlSerializer( exposedTags.GetType() );
-                    
+                    var serializer = new XmlSerializer( objectType );
+
                     // need to overwrite
                     if( File.Exists( path ) )
                     {
@@ -65,12 +42,12 @@ namespace TagLookup
                         FileIOPermission filePermission =
                                  new FileIOPermission( FileIOPermissionAccess.AllAccess, path );
 
-                        var serialized = new XmlSerializer( exposedTags.GetType() );
+                        var serialized = new XmlSerializer( objectType );
                         using( var fs = new FileStream( path, FileMode.Create ) )
                         {
                             using( XmlWriter writer = XmlWriter.Create( fs ) )
                             {
-                                serialized.Serialize( writer, exposedTags );
+                                serialized.Serialize( writer, containedObject );
                             }
                         }
                     }
@@ -78,7 +55,7 @@ namespace TagLookup
                     {
                         using( var writer = XmlWriter.Create( path ) )
                         {
-                            serializer.Serialize( writer, exposedTags );
+                            serializer.Serialize( writer, containedObject );
                         }
                     }
                 }
@@ -87,55 +64,57 @@ namespace TagLookup
                     // setting aren't saved
                 }
             }
-
-            exposedTagsConfigurationInstance = null;
         }
-        #endregion
 
-        #region Private Methods
         /// <summary>
-        /// Initialization called only once by the exposedTagsConfigurationInstance
+        /// Initialization called by the base class. Finds the file, and creates the specified object
         /// </summary>
-        private ExposedTagsConfiguration()
+        /// <param name="appconfigDir">Will be looked up in the app config</param>
+        /// <param name="appconfigDirName">Will be looked up in the app config</param>
+        /// <param name="configFileName">The name of the actual xml file</param>
+        /// <param name="readObject">The object to generate via deserialization</param>
+        /// <param name="objectType">The type of the object</param>
+        protected XmlConfiguration( string appconfigDir, string appconfigDirName, string configFileName,
+                                    out object readObject, Type objectType )
         {
             string dir = null;
             string name = null;
+            readObject = null;
 
             // Dir and Name
             try
             {
                 var appSettings = ConfigurationManager.AppSettings;
-                dir = appSettings[ "ExposedTagsFilePath" ];
-                name = appSettings[ "ExposedTagsFileName" ];
+                dir = appSettings[ appconfigDir ];
+                name = appSettings[ appconfigDirName ];
             }
             catch( ConfigurationErrorsException )
             {
                 // Not strictly necessary
             }
 
-            // Two passes to try and create the Exposed tags from either a different directory
+            // Two passes to try and create the object from either a different directory
             // or the default directory (to achieve persistence from any location)
-            if( !createConfigurationFile( dir, name ) )
+            if( !createConfigurationFile( dir, name, out readObject, objectType ) )
             {
                 configFileDir = Directory.GetCurrentDirectory();
-                configFileName = "ExposedTags.xml";
-
-                if( !createConfigurationFile( configFileDir, configFileName ) ) 
-                {
-                    exposedTags = new ExposedTags();
-                    exposedTags.CreateDefault();
-                }
+                createConfigurationFile( configFileDir, configFileName, out readObject, objectType );
             }
         }
+        #endregion
 
+        #region Private Methods
         /// <summary>
-        /// Attempt to create the ExposedTags object via deserialization
+        /// Attempt to create the object via deserialization
         /// </summary>
         /// <param name="dir">Directory of file</param>
         /// <param name="name">Name of file</param>
+        /// <param name="readObject">Will contain a reference to deserialized object on success, null on failure</param>
+        /// <param name="objectType">The type the deserilizer will try to use</param>
         /// <returns>True on success, False on failure</returns>
-        private bool createConfigurationFile( string dir, string name )
+        private bool createConfigurationFile( string dir, string name, out object readObject, Type objectType )
         {
+            readObject = null;
             if( dir == null || name == null )
             {
                 return false;
@@ -149,10 +128,10 @@ namespace TagLookup
                 }
                 var path = Path.Combine( dir, name );
 
-                var serializer = new XmlSerializer( typeof( ExposedTags ) );
+                var serializer = new XmlSerializer( objectType );
                 using( var reader = XmlReader.Create( path ) )
                 {
-                    exposedTags = ( ExposedTags )serializer.Deserialize( reader );
+                    readObject = serializer.Deserialize( reader );
                 }
             }
             catch( Exception )

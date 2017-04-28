@@ -29,6 +29,11 @@
         private void InitializeComponent()
         {
             this.SupportedSitesContainer = new System.Windows.Forms.Panel();
+            this.WebsiteButtonsContainer = new System.Windows.Forms.Panel();
+            this.RemoveWebsiteButton = new System.Windows.Forms.Button();
+            this.AddWebsiteButton = new System.Windows.Forms.Button();
+            this.AlbumCoverContainer = new System.Windows.Forms.Panel();
+            this.AlbumCover = new System.Windows.Forms.PictureBox();
             this.SupportedSites = new System.Windows.Forms.CheckedListBox();
             this.ItemsToProcessQueueContainer = new System.Windows.Forms.Panel();
             this.ItemsToProcessQueue = new System.Windows.Forms.DataGridView();
@@ -46,6 +51,9 @@
             this.AddDirectoryButtonContainer = new System.Windows.Forms.Panel();
             this.AddDirectoryButton = new System.Windows.Forms.Button();
             this.SupportedSitesContainer.SuspendLayout();
+            this.WebsiteButtonsContainer.SuspendLayout();
+            this.AlbumCoverContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AlbumCover)).BeginInit();
             this.ItemsToProcessQueueContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ItemsToProcessQueue)).BeginInit();
             this.LogContainer.SuspendLayout();
@@ -59,24 +67,81 @@
             // 
             // SupportedSitesContainer
             // 
+            this.SupportedSitesContainer.Controls.Add(this.WebsiteButtonsContainer);
+            this.SupportedSitesContainer.Controls.Add(this.AlbumCoverContainer);
             this.SupportedSitesContainer.Controls.Add(this.SupportedSites);
             this.SupportedSitesContainer.Dock = System.Windows.Forms.DockStyle.Left;
             this.SupportedSitesContainer.Location = new System.Drawing.Point(0, 0);
             this.SupportedSitesContainer.Margin = new System.Windows.Forms.Padding(0);
             this.SupportedSitesContainer.MinimumSize = new System.Drawing.Size(151, 538);
             this.SupportedSitesContainer.Name = "SupportedSitesContainer";
-            this.SupportedSitesContainer.Padding = new System.Windows.Forms.Padding(5, 5, 0, 0);
+            this.SupportedSitesContainer.Padding = new System.Windows.Forms.Padding(5, 5, 0, 5);
             this.SupportedSitesContainer.Size = new System.Drawing.Size(151, 538);
             this.SupportedSitesContainer.TabIndex = 0;
             // 
+            // WebsiteButtonsContainer
+            // 
+            this.WebsiteButtonsContainer.Controls.Add(this.RemoveWebsiteButton);
+            this.WebsiteButtonsContainer.Controls.Add(this.AddWebsiteButton);
+            this.WebsiteButtonsContainer.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.WebsiteButtonsContainer.Location = new System.Drawing.Point(5, 142);
+            this.WebsiteButtonsContainer.Name = "WebsiteButtonsContainer";
+            this.WebsiteButtonsContainer.Size = new System.Drawing.Size(146, 30);
+            this.WebsiteButtonsContainer.TabIndex = 2;
+            // 
+            // RemoveWebsiteButton
+            // 
+            this.RemoveWebsiteButton.Dock = System.Windows.Forms.DockStyle.Right;
+            this.RemoveWebsiteButton.Location = new System.Drawing.Point(71, 0);
+            this.RemoveWebsiteButton.Name = "RemoveWebsiteButton";
+            this.RemoveWebsiteButton.Size = new System.Drawing.Size(75, 30);
+            this.RemoveWebsiteButton.TabIndex = 1;
+            this.RemoveWebsiteButton.Text = "Remove";
+            this.RemoveWebsiteButton.UseVisualStyleBackColor = true;
+            this.RemoveWebsiteButton.Click += new System.EventHandler(this.RemoveWebsiteButton_Click);
+            // 
+            // AddWebsiteButton
+            // 
+            this.AddWebsiteButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.AddWebsiteButton.Location = new System.Drawing.Point(0, 0);
+            this.AddWebsiteButton.Name = "AddWebsiteButton";
+            this.AddWebsiteButton.Size = new System.Drawing.Size(75, 30);
+            this.AddWebsiteButton.TabIndex = 0;
+            this.AddWebsiteButton.Text = "Add";
+            this.AddWebsiteButton.UseVisualStyleBackColor = true;
+            this.AddWebsiteButton.Click += new System.EventHandler(this.AddWebsiteButton_Click);
+            // 
+            // AlbumCoverContainer
+            // 
+            this.AlbumCoverContainer.Controls.Add(this.AlbumCover);
+            this.AlbumCoverContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.AlbumCoverContainer.Location = new System.Drawing.Point(5, 5);
+            this.AlbumCoverContainer.Name = "AlbumCoverContainer";
+            this.AlbumCoverContainer.Padding = new System.Windows.Forms.Padding(3);
+            this.AlbumCoverContainer.Size = new System.Drawing.Size(146, 167);
+            this.AlbumCoverContainer.TabIndex = 1;
+            // 
+            // AlbumCover
+            // 
+            this.AlbumCover.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.AlbumCover.ErrorImage = null;
+            this.AlbumCover.InitialImage = null;
+            this.AlbumCover.Location = new System.Drawing.Point(3, 3);
+            this.AlbumCover.Name = "AlbumCover";
+            this.AlbumCover.Size = new System.Drawing.Size(140, 161);
+            this.AlbumCover.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.AlbumCover.TabIndex = 0;
+            this.AlbumCover.TabStop = false;
+            // 
             // SupportedSites
             // 
-            this.SupportedSites.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SupportedSites.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.SupportedSites.FormattingEnabled = true;
-            this.SupportedSites.Location = new System.Drawing.Point(5, 5);
+            this.SupportedSites.Location = new System.Drawing.Point(5, 172);
             this.SupportedSites.Name = "SupportedSites";
-            this.SupportedSites.Size = new System.Drawing.Size(146, 533);
+            this.SupportedSites.Size = new System.Drawing.Size(146, 361);
             this.SupportedSites.TabIndex = 0;
+            this.SupportedSites.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SupportedSites_MouseDoubleClick);
             // 
             // ItemsToProcessQueueContainer
             // 
@@ -101,6 +166,7 @@
             this.ItemsToProcessQueue.RowTemplate.Height = 24;
             this.ItemsToProcessQueue.Size = new System.Drawing.Size(998, 477);
             this.ItemsToProcessQueue.TabIndex = 0;
+            this.ItemsToProcessQueue.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.ItemsToProcessQueue_CellEnter);
             this.ItemsToProcessQueue.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ItemsToProcessQueue_CellMouseDoubleClick);
             // 
             // LogContainer
@@ -258,6 +324,9 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TagLookup_FormClosing);
             this.Load += new System.EventHandler(this.TagLookup_Load);
             this.SupportedSitesContainer.ResumeLayout(false);
+            this.WebsiteButtonsContainer.ResumeLayout(false);
+            this.AlbumCoverContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.AlbumCover)).EndInit();
             this.ItemsToProcessQueueContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ItemsToProcessQueue)).EndInit();
             this.LogContainer.ResumeLayout(false);
@@ -291,6 +360,11 @@
         private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.Panel RunButtonContainer;
         private System.Windows.Forms.Button RunButton;
+        private System.Windows.Forms.Panel AlbumCoverContainer;
+        private System.Windows.Forms.PictureBox AlbumCover;
+        private System.Windows.Forms.Panel WebsiteButtonsContainer;
+        private System.Windows.Forms.Button RemoveWebsiteButton;
+        private System.Windows.Forms.Button AddWebsiteButton;
     }
 }
 

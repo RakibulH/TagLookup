@@ -65,15 +65,25 @@
   <ItemGroup>
     <Compile Include="Containers\TagProcessing.cs" />
     <Compile Include="DataProcessing\AudioFingerprintLookup.cs" />
-    <Compile Include="Logging and Configuration\ExposedTags.cs" />
-    <Compile Include="Logging and Configuration\ExposedTagsConfiguration.cs" />
+    <Compile Include="DataProcessing\HttpScreenScraping.cs" />
+    <Compile Include="Configuration\ExposedWebsites.cs" />
+    <Compile Include="Configuration\ExposedWebsitesConfiguration.cs" />
+    <Compile Include="Configuration\XmlConfiguration.cs" />
+    <Compile Include="Configuration\ExposedTags.cs" />
+    <Compile Include="Configuration\ExposedTagsConfiguration.cs" />
+    <Compile Include="Forms\AddWebsiteDialogue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AddWebsiteDialogue.Designer.cs">
+      <DependentUpon>AddWebsiteDialogue.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Mp3FileDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Mp3FileDialogue.Designer.cs">
       <DependentUpon>Mp3FileDialogue.cs</DependentUpon>
     </Compile>
-    <Compile Include="Logging and Configuration\Logger.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Containers\Mp3File.cs" />
     <Compile Include="DataProcessing\DataProcessor.cs" />
     <Compile Include="Forms\TagLookup.cs">
@@ -84,6 +94,9 @@
     </Compile>
     <Compile Include="Main\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\AddWebsiteDialogue.resx">
+      <DependentUpon>AddWebsiteDialogue.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Mp3FileDialogue.resx">
       <DependentUpon>Mp3FileDialogue.cs</DependentUpon>
     </EmbeddedResource>
@@ -111,7 +124,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Logging and Configuration\App.config">
+    <None Include="Configuration\App.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 using System.Xml.Serialization;
 
 namespace TagLookup
@@ -36,10 +35,10 @@ namespace TagLookup
             {
             }
 
-            public Tag( string name, bool privateFrame = false )
+            public Tag( string name, bool privateOrUserFrame = false )
             {
                 Name = name;
-                PrivateFrame = privateFrame;
+                PrivateOrUserFrame = privateOrUserFrame;
             }
             #endregion
 
@@ -47,8 +46,8 @@ namespace TagLookup
             [XmlAttribute( "Name" )]
             public string Name;
 
-            [XmlAttribute( "PrivateFrame" )]
-            public bool PrivateFrame;
+            [XmlAttribute( "PrivateOrUserFrame" )]
+            public bool PrivateOrUserFrame;
             #endregion
         }
         #endregion
@@ -82,7 +81,7 @@ namespace TagLookup
         /// </summary>
         /// <param name="name">Name of tag</param>
         /// <returns>true if private frame, false if supported tag</returns>
-        public bool IsPrivateFrame( string name )
+        public static bool IsPrivateOrUserFrame( string name )
         {
             foreach( var propertyInfo in typeof( TagLib.Tag ).GetProperties() )
             {

@@ -3,7 +3,7 @@
     /// <summary>
     /// Necessary as a binding target    
     /// </summary>
-    class TagProcessing
+    public class TagProcessing
     {
         #region Constructors
         public TagProcessing()
@@ -16,6 +16,13 @@
             this.tagName = tagName;
             this.tagValueOld = tagValueOld;
             this.tagValueNew = tagValueNew;
+        }
+
+        public TagProcessing( TagProcessing toClone )
+        {
+            tagName = toClone.tagName;
+            tagValueOld = toClone.tagValueOld;
+            tagValueNew = toClone.tagValueNew;
         }
         #endregion
 

@@ -32,29 +32,32 @@
             this.TagsContainer = new System.Windows.Forms.Panel();
             this.TagsGrid = new System.Windows.Forms.DataGridView();
             this.ButtonsContainer = new System.Windows.Forms.Panel();
+            this.ResetToDefaultTagsButtonContainer = new System.Windows.Forms.Panel();
+            this.ResetToDefaultTagsButton = new System.Windows.Forms.Button();
             this.ResetButtonContainer = new System.Windows.Forms.Panel();
             this.ResetToOldTagsButton = new System.Windows.Forms.Button();
-            this.AddTagButtonContainer = new System.Windows.Forms.Panel();
-            this.AddTagButton = new System.Windows.Forms.Button();
             this.SaveCurrentTagsAsDefaultButtonContainer = new System.Windows.Forms.Panel();
             this.SaveCurrentAsDefaultsButton = new System.Windows.Forms.Button();
             this.CopyButtonContainer = new System.Windows.Forms.Panel();
             this.SaveChangesButton = new System.Windows.Forms.Button();
             this.RemoveTagButtonContainer = new System.Windows.Forms.Panel();
             this.RemoveTagButton = new System.Windows.Forms.Button();
-            this.ResetToDefaultTagsButtonContainer = new System.Windows.Forms.Panel();
-            this.ResetToDefaultTagsButton = new System.Windows.Forms.Button();
+            this.AddTagButtonContainer = new System.Windows.Forms.Panel();
+            this.AddTagButton = new System.Windows.Forms.Button();
+            this.TagName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TagValueOld = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TagValueNew = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Mp3FilePropertiesContainer = new System.Windows.Forms.Panel();
             Mp3FilePropertiesContainer.SuspendLayout();
             this.TagsContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TagsGrid)).BeginInit();
             this.ButtonsContainer.SuspendLayout();
+            this.ResetToDefaultTagsButtonContainer.SuspendLayout();
             this.ResetButtonContainer.SuspendLayout();
-            this.AddTagButtonContainer.SuspendLayout();
             this.SaveCurrentTagsAsDefaultButtonContainer.SuspendLayout();
             this.CopyButtonContainer.SuspendLayout();
             this.RemoveTagButtonContainer.SuspendLayout();
-            this.ResetToDefaultTagsButtonContainer.SuspendLayout();
+            this.AddTagButtonContainer.SuspendLayout();
             this.SuspendLayout();
             // 
             // Mp3FilePropertiesContainer
@@ -78,9 +81,14 @@
             // 
             // TagsGrid
             // 
+            this.TagsGrid.AllowUserToAddRows = false;
             this.TagsGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.TagsGrid.BackgroundColor = System.Drawing.SystemColors.Window;
             this.TagsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.TagsGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.TagName,
+            this.TagValueOld,
+            this.TagValueNew});
             this.TagsGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TagsGrid.Location = new System.Drawing.Point(0, 0);
             this.TagsGrid.Name = "TagsGrid";
@@ -102,6 +110,27 @@
             this.ButtonsContainer.Size = new System.Drawing.Size(1130, 63);
             this.ButtonsContainer.TabIndex = 1;
             // 
+            // ResetToDefaultTagsButtonContainer
+            // 
+            this.ResetToDefaultTagsButtonContainer.Controls.Add(this.ResetToDefaultTagsButton);
+            this.ResetToDefaultTagsButtonContainer.Dock = System.Windows.Forms.DockStyle.Left;
+            this.ResetToDefaultTagsButtonContainer.Location = new System.Drawing.Point(752, 0);
+            this.ResetToDefaultTagsButtonContainer.Name = "ResetToDefaultTagsButtonContainer";
+            this.ResetToDefaultTagsButtonContainer.Padding = new System.Windows.Forms.Padding(3);
+            this.ResetToDefaultTagsButtonContainer.Size = new System.Drawing.Size(188, 63);
+            this.ResetToDefaultTagsButtonContainer.TabIndex = 12;
+            // 
+            // ResetToDefaultTagsButton
+            // 
+            this.ResetToDefaultTagsButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ResetToDefaultTagsButton.Location = new System.Drawing.Point(3, 3);
+            this.ResetToDefaultTagsButton.Name = "ResetToDefaultTagsButton";
+            this.ResetToDefaultTagsButton.Size = new System.Drawing.Size(182, 57);
+            this.ResetToDefaultTagsButton.TabIndex = 0;
+            this.ResetToDefaultTagsButton.Text = "Reset To Default Tags";
+            this.ResetToDefaultTagsButton.UseVisualStyleBackColor = true;
+            this.ResetToDefaultTagsButton.Click += new System.EventHandler(this.ResetToDefaultTagsButton_Click);
+            // 
             // ResetButtonContainer
             // 
             this.ResetButtonContainer.Controls.Add(this.ResetToOldTagsButton);
@@ -122,27 +151,6 @@
             this.ResetToOldTagsButton.Text = "Reset To Old Tags";
             this.ResetToOldTagsButton.UseVisualStyleBackColor = true;
             this.ResetToOldTagsButton.Click += new System.EventHandler(this.ResetToOldTagsButton_Click);
-            // 
-            // AddTagButtonContainer
-            // 
-            this.AddTagButtonContainer.Controls.Add(this.AddTagButton);
-            this.AddTagButtonContainer.Dock = System.Windows.Forms.DockStyle.Left;
-            this.AddTagButtonContainer.Location = new System.Drawing.Point(0, 0);
-            this.AddTagButtonContainer.Name = "AddTagButtonContainer";
-            this.AddTagButtonContainer.Padding = new System.Windows.Forms.Padding(3);
-            this.AddTagButtonContainer.Size = new System.Drawing.Size(188, 63);
-            this.AddTagButtonContainer.TabIndex = 9;
-            // 
-            // AddTagButton
-            // 
-            this.AddTagButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.AddTagButton.Location = new System.Drawing.Point(3, 3);
-            this.AddTagButton.Name = "AddTagButton";
-            this.AddTagButton.Size = new System.Drawing.Size(182, 57);
-            this.AddTagButton.TabIndex = 0;
-            this.AddTagButton.Text = "Add Tag";
-            this.AddTagButton.UseVisualStyleBackColor = true;
-            this.AddTagButton.Click += new System.EventHandler(this.AddTagButton_Click);
             // 
             // SaveCurrentTagsAsDefaultButtonContainer
             // 
@@ -207,26 +215,46 @@
             this.RemoveTagButton.UseVisualStyleBackColor = true;
             this.RemoveTagButton.Click += new System.EventHandler(this.RemoveTagButton_Click);
             // 
-            // ResetToDefaultTagsButtonContainer
+            // AddTagButtonContainer
             // 
-            this.ResetToDefaultTagsButtonContainer.Controls.Add(this.ResetToDefaultTagsButton);
-            this.ResetToDefaultTagsButtonContainer.Dock = System.Windows.Forms.DockStyle.Left;
-            this.ResetToDefaultTagsButtonContainer.Location = new System.Drawing.Point(752, 0);
-            this.ResetToDefaultTagsButtonContainer.Name = "ResetToDefaultTagsButtonContainer";
-            this.ResetToDefaultTagsButtonContainer.Padding = new System.Windows.Forms.Padding(3);
-            this.ResetToDefaultTagsButtonContainer.Size = new System.Drawing.Size(188, 63);
-            this.ResetToDefaultTagsButtonContainer.TabIndex = 12;
+            this.AddTagButtonContainer.Controls.Add(this.AddTagButton);
+            this.AddTagButtonContainer.Dock = System.Windows.Forms.DockStyle.Left;
+            this.AddTagButtonContainer.Location = new System.Drawing.Point(0, 0);
+            this.AddTagButtonContainer.Name = "AddTagButtonContainer";
+            this.AddTagButtonContainer.Padding = new System.Windows.Forms.Padding(3);
+            this.AddTagButtonContainer.Size = new System.Drawing.Size(188, 63);
+            this.AddTagButtonContainer.TabIndex = 9;
             // 
-            // ResetToDefaultTagsButton
+            // AddTagButton
             // 
-            this.ResetToDefaultTagsButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ResetToDefaultTagsButton.Location = new System.Drawing.Point(3, 3);
-            this.ResetToDefaultTagsButton.Name = "ResetToDefaultTagsButton";
-            this.ResetToDefaultTagsButton.Size = new System.Drawing.Size(182, 57);
-            this.ResetToDefaultTagsButton.TabIndex = 0;
-            this.ResetToDefaultTagsButton.Text = "Reset To Default Tags";
-            this.ResetToDefaultTagsButton.UseVisualStyleBackColor = true;
-            this.ResetToDefaultTagsButton.Click += new System.EventHandler(this.ResetToDefaultTagsButton_Click);
+            this.AddTagButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.AddTagButton.Location = new System.Drawing.Point(3, 3);
+            this.AddTagButton.Name = "AddTagButton";
+            this.AddTagButton.Size = new System.Drawing.Size(182, 57);
+            this.AddTagButton.TabIndex = 0;
+            this.AddTagButton.Text = "Add Tag";
+            this.AddTagButton.UseVisualStyleBackColor = true;
+            this.AddTagButton.Click += new System.EventHandler(this.AddTagButton_Click);
+            // 
+            // TagName
+            // 
+            this.TagName.DataPropertyName = "tagName";
+            this.TagName.HeaderText = "Tag Name";
+            this.TagName.Name = "TagName";
+            this.TagName.ReadOnly = true;
+            // 
+            // TagValueOld
+            // 
+            this.TagValueOld.DataPropertyName = "tagValueOld";
+            this.TagValueOld.HeaderText = "Current Tag Value";
+            this.TagValueOld.Name = "TagValueOld";
+            this.TagValueOld.ReadOnly = true;
+            // 
+            // TagValueNew
+            // 
+            this.TagValueNew.DataPropertyName = "tagValuenew";
+            this.TagValueNew.HeaderText = "New Tag Value";
+            this.TagValueNew.Name = "TagValueNew";
             // 
             // Mp3FileDialogue
             // 
@@ -240,12 +268,12 @@
             this.TagsContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.TagsGrid)).EndInit();
             this.ButtonsContainer.ResumeLayout(false);
+            this.ResetToDefaultTagsButtonContainer.ResumeLayout(false);
             this.ResetButtonContainer.ResumeLayout(false);
-            this.AddTagButtonContainer.ResumeLayout(false);
             this.SaveCurrentTagsAsDefaultButtonContainer.ResumeLayout(false);
             this.CopyButtonContainer.ResumeLayout(false);
             this.RemoveTagButtonContainer.ResumeLayout(false);
-            this.ResetToDefaultTagsButtonContainer.ResumeLayout(false);
+            this.AddTagButtonContainer.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -266,5 +294,8 @@
         private System.Windows.Forms.Button RemoveTagButton;
         private System.Windows.Forms.Panel ResetToDefaultTagsButtonContainer;
         private System.Windows.Forms.Button ResetToDefaultTagsButton;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TagName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TagValueOld;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TagValueNew;
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,9 +12,10 @@ namespace TagLookup
     public partial class TagLookup : Form
     {
         #region Fields
-        private Logger log;                             // reference to logger singleton
-        private BindingList<Mp3File> itemsToProcess;    // Binded to DataGridView ItemsToProcessQueue
-        private DataProcessor dataProcessor;            // Object that handles all processing of data
+        private Logger log;                                             // reference to logger singleton
+        private BindingList<Mp3File> itemsToProcess;                    // Binded to DataGridView ItemsToProcessQueue
+        private BindingList<Website> supportedSites;                    // Binded to CheckedListBox Supported sites
+        private DataProcessor dataProcessor;                            // Object that handles all processing of data
         #endregion
 
         #region Startup and Shutdown
@@ -31,6 +34,12 @@ namespace TagLookup
             itemsToProcess = new BindingList<Mp3File>();
             BindItemsToProcessGrid();
             dataProcessor = new DataProcessor();
+            if( ExposedWebsitesConfiguration.ExposedWebsitesConfigurationInstance != null )
+            {
+                supportedSites = new BindingList<Website>( 
+                    ExposedWebsitesConfiguration.ExposedWebsitesConfigurationInstance.ExposedWebsites.Websites );
+                SupportedSites.DataSource = supportedSites;
+            }
         }
 
         private void TagLookup_FormClosing( object sender, FormClosingEventArgs e )
@@ -42,6 +51,10 @@ namespace TagLookup
             if( ExposedTagsConfiguration.ExposedTagsConfigurationInstance != null )
             {
                 ExposedTagsConfiguration.ExposedTagsConfigurationInstance.Dispose();
+            }
+            if( ExposedWebsitesConfiguration.ExposedWebsitesConfigurationInstance != null )
+            {
+                ExposedWebsitesConfiguration.ExposedWebsitesConfigurationInstance.Dispose();
             }
         }
         #endregion
@@ -119,7 +132,17 @@ namespace TagLookup
         /// </summary>
         private void RunButton_Click( object sender, EventArgs e )
         {
-            dataProcessor.Process( itemsToProcess );
+            List<Mp3File> completedSuccessfullyList = new List<Mp3File>();
+            foreach( var item in itemsToProcess )
+            {
+                if( dataProcessor.TryProcess( item, SupportedSites.CheckedItems.OfType<Website>().ToList() ) )
+                    completedSuccessfullyList.Add( item );
+            }
+            foreach( var item in completedSuccessfullyList )
+            {
+                itemsToProcess.Remove( item );
+                log.Log( "Successfully processed " + item + "\n" );
+            }
         }
 
         /// <summary>
@@ -129,6 +152,37 @@ namespace TagLookup
         {
             var mp3FileDialogue = new Mp3FileDialogue( itemsToProcess.ElementAt( e.RowIndex ) );
             mp3FileDialogue.Show();
+        }
+
+        /// <summary>
+        /// Remove all checked items
+        /// </summary>
+        private void RemoveWebsiteButton_Click( object sender, EventArgs e )
+        {
+            foreach( var site in SupportedSites.CheckedItems.OfType<Website>().ToList() )
+                supportedSites.Remove( site );
+        }
+
+        /// <summary>
+        /// Spawn a dialog to create a new ExposedWebsite.Website 
+        /// </summary>
+        private void AddWebsiteButton_Click( object sender, EventArgs e )
+        {
+            var addWebsiteDialogue = new AddWebsiteDialogue( supportedSites );
+            addWebsiteDialogue.Show();
+        }
+
+        /// <summary>
+        /// Spawn a dialog to edit an existing ExposedWebsite.Website 
+        /// </summary>
+        private void SupportedSites_MouseDoubleClick( object sender, MouseEventArgs e )
+        {
+            var index = SupportedSites.IndexFromPoint( e.Location );
+            if( index != ListBox.NoMatches )
+            {
+                var addWebsiteDialogue = new AddWebsiteDialogue( supportedSites, supportedSites.ElementAt( index ) );
+                addWebsiteDialogue.Show();
+            }
         }
         #endregion
 
@@ -161,8 +215,31 @@ namespace TagLookup
         {
             foreach( var filePath in filesToAdd.Where( fp => !itemsToProcess.Select( mp3File => mp3File.AbsolutePath ).Contains( fp ) ) )
             {
-                itemsToProcess.Add( new Mp3File( filePath ) );
-                log.Log( "Adding File " + filePath + "\n" );
+                try
+                {
+                    itemsToProcess.Add( new Mp3File( filePath ) );
+                    log.Log( "Adding File " + filePath + "\n" );
+                }
+                catch
+                {
+                    log.Log( "Unable to add file " + filePath + "\n" );
+                }
+                
+            }
+        }
+
+        /// <summary>
+        /// Display first embedded picture in mp3file
+        /// </summary>
+        private void ItemsToProcessQueue_CellEnter( object sender, DataGridViewCellEventArgs e )
+        {
+            if( itemsToProcess.ElementAt( e.RowIndex ).AlbumCover == null )
+                return;
+
+            using( var ms = new MemoryStream( itemsToProcess.ElementAt( e.RowIndex ).AlbumCover.Data.Data ) )
+            {
+                var image = Image.FromStream( ms );
+                AlbumCover.Image = image;
             }
         }
         #endregion
