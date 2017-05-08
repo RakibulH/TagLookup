@@ -126,6 +126,30 @@ namespace TagLookup
             tags.Clear();
             copy.ForEach( tag => tags.Add( new TagProcessing( tag.tagName, tag.tagValueOld, tag.tagValueOld ) ) );
         }
+
+        /// <summary>
+        /// Change a tag value without saving changes
+        /// </summary>
+        /// <param name="tagName">Name of tag</param>
+        /// <param name="tagValue">Value of tag as a string</param>
+        /// <param name="append">Control to specify if appending is desired</param>
+        public void AddDirtyTag( string tagName, string tagValue, bool append = true )
+        {
+            var targetTag = tags.Where( tag => tag.tagName == tagName ).FirstOrDefault();
+            if( targetTag == null )
+            {
+                tags.Add( new TagProcessing( tagName, string.Empty, tagValue ) );
+            }
+            else if( append )
+            {
+                targetTag.tagValueNew += targetTag.tagValueNew == string.Empty ? "" : ";";
+                targetTag.tagValueNew += tagValue;
+            }
+            else
+            {
+                targetTag.tagValueNew = tagValue;
+            }
+        }
         #endregion
 
         #region Private Helpers

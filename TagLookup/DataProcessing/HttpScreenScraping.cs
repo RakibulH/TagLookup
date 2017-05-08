@@ -45,7 +45,7 @@ namespace TagLookup
                 var completedUri = CompleteUri( uri.uri, itemToProcess.DirtyTags );
                 if( completedUri.Equals( this.completedUri ) )
                 {
-                    ProcessRegex( website.regexElements, itemToProcess.DirtyTags );
+                    ProcessRegex( website.regexElements, itemToProcess );
                     break;
                 }
 
@@ -60,7 +60,7 @@ namespace TagLookup
                         var completedPage = webClient.DownloadString( completedUri );
                         this.completedUri = completedUri;
                         this.completedPage = completedPage;
-                        ProcessRegex( website.regexElements, itemToProcess.DirtyTags );
+                        ProcessRegex( website.regexElements, itemToProcess );
                         break;
                     }
                     catch
@@ -76,7 +76,7 @@ namespace TagLookup
         /// </summary>
         /// <param name="regexElements">Regex elements define control</param>
         /// <param name="dirtyTags">Tags to where to map</param>
-        private void ProcessRegex( List<Website.RegularExpression> regexElements, List<TagProcessing> dirtyTags )
+        private void ProcessRegex( List<Website.RegularExpression> regexElements, Mp3File itemToProcess)
         {
             List<Website.RegularExpression> invalidRegexElements = null;
 
@@ -92,13 +92,13 @@ namespace TagLookup
                     {
                         var matches = Regex.Matches( completedPage, regex.Regex );
                         foreach( Match match in matches )
-                            MatchToTagProcessingList( regex, match, dirtyTags );
+                            itemToProcess.AddDirtyTag( regex.TargetTag, match.Groups[ 1 ].Value, regex.Append );
                     }
                     else
                     {
                         var match = Regex.Match( completedPage, regex.Regex );
                         if( match.Success )
-                            MatchToTagProcessingList( regex, match, dirtyTags );
+                            itemToProcess.AddDirtyTag( regex.TargetTag, match.Groups[ 1 ].Value, regex.Append );
                     }
                 }
                 catch // invalid regex
@@ -139,30 +139,6 @@ namespace TagLookup
                 }
             }
             return completedUri;
-        }
-
-        /// <summary>
-        /// Map a single match to a list of tag processing objects
-        /// </summary>
-        /// <param name="regex">Used to find target</param>
-        /// <param name="match">For getting captured string</param>
-        /// <param name="dirtyTags">List to mutate</param>
-        private void MatchToTagProcessingList( Website.RegularExpression regex, Match match, List<TagProcessing> dirtyTags )
-        {
-            var targetTag = dirtyTags.Where( tag => tag.tagName == regex.TargetTag ).FirstOrDefault();
-            if( targetTag == null )
-            {
-                dirtyTags.Add( new TagProcessing( regex.TargetTag, string.Empty, match.Groups[ 1 ].Value ) );
-            }
-            else if( regex.Append )
-            {
-                targetTag.tagValueNew += targetTag.tagValueNew == string.Empty ? "" : ";";
-                targetTag.tagValueNew += match.Groups[ 1 ].Value;
-            }
-            else
-            {
-                targetTag.tagValueNew = match.Groups[ 1 ].Value;
-            }
         }
         #endregion
     }

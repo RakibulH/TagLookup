@@ -19,11 +19,13 @@ namespace TagLookup
         private Process fingerprintApplication;     // fingerprint application initialized from Initialize method
         private StringBuilder applicationArguments; // spaces in file name require quotes, so use this
         private HttpClient httpClient;              // used to interact with Acoustid web api
-        private StringBuilder payload;              // used to create payload
+        private StringBuilder acoustidPayload;      // used to create payload
         
         // hard coded these for testing, will probably move
-        private static string acoustid = "http://api.acoustid.org/v2/";
+        private static string acoustid = "http://api.acoustid.org/v2/lookup?{0}meta=recordingids"; // +recordings+releases+releaseids+releasegroups+releasegroupids+tracks+compress+usermeta+sources
         private static string apiKey = "W4Zx4nV3xp";
+        private static string musicbrainz = "http://musicbrainz.org/ws/2/recording/{0}?inc=artist-credits+releases+discids&fmt=json";
+        private const string userAgent = @"Mozilla / 5.0( Windows NT 6.3; WOW64; rv: 54.0) Gecko / 20100101 Firefox / 54.0"; // Musicbrainz api needs this
         #endregion
 
         #region Constructors
@@ -42,19 +44,22 @@ namespace TagLookup
         /// <exception>Throws an exception if unable to create the Json object, or http request did not succeed</exception>
         public void Lookup( Mp3File item )
         {
-            var fingerprintLookupReturnInfo = GetFingerprint( item.AbsolutePath );
-            var result = JsonConvert.DeserializeObject< JObject >( fingerprintLookupReturnInfo );
-            result.Add( "client", apiKey );
+            var fingerprint = GetFingerprint( item.AbsolutePath );
+            var fingerprintJson = JsonConvert.DeserializeObject< JObject >( fingerprint );
+            fingerprintJson.Add( "client", apiKey );
 
-            // Remote api does not like double values
-            var duration = ( JProperty ) result.Children().Where( 
+            // Remote api does not like decimal values
+            var duration = ( JProperty )fingerprintJson.Children().Where( 
                 x => ( ( JProperty )x ).Name == "duration" ).FirstOrDefault();
             if( duration != null )
             {
                 duration.Value = Math.Round( ( ( double )duration.Value ) );
             }
 
-            LookupByFingerprint( result );
+            var acoustidJson = LookupByFingerprint( fingerprintJson );
+            var musicbrainzJson = LookupByAcoustid( acoustidJson );
+
+            MapMusicBrainzResponseToMp3( item, musicbrainzJson );
         }
         #endregion
 
@@ -112,8 +117,8 @@ namespace TagLookup
                     // initalize all other objects needed
                     applicationArguments = new StringBuilder();
                     httpClient = new HttpClient();
-                    httpClient.BaseAddress = new Uri( acoustid );
-                    payload = new StringBuilder( string.Empty );
+                    httpClient.DefaultRequestHeaders.TryAddWithoutValidation( "User-Agent", userAgent );
+                    acoustidPayload = new StringBuilder( string.Empty );
                 }
                 catch( Exception )
                 {
@@ -177,20 +182,70 @@ namespace TagLookup
         /// Using the input JObject, creates the payload, and sends an http request
         /// </summary>
         /// <param name="fingerprintDeserialized">Assumes this object is in a good state and is parsed into a string string dictonary</param>
-        /// <returns>Resulting string of the http request</returns>
-        private string LookupByFingerprint( JObject fingerprintDeserialized )
+        /// <returns>Resulting JSon object of the http request</returns>
+        private JObject LookupByFingerprint( JObject fingerprintDeserialized )
         {
-            payload.Clear();
+            acoustidPayload.Clear();
             var values = fingerprintDeserialized.ToObject< Dictionary< string, string > >();
             foreach( var value in values )
             {
-                payload.AppendFormat( "{0}={1}&", value.Key, value.Value );
+                acoustidPayload.AppendFormat( "{0}={1}&", value.Key, value.Value );
             }
-            var response = httpClient.GetAsync( "lookup?" + payload.ToString() + "meta=recordings+recordingids+releases+releaseids+releasegroups+releasegroupids+tracks+compress+usermeta+sources" ).Result;
-            response.EnsureSuccessStatusCode();
-            var result = response.Content.ReadAsStringAsync().Result;
-            return result;
-        }   
+
+            var acoustidApiCall = httpClient.GetAsync( string.Format( acoustid, acoustidPayload.ToString() ) );
+            acoustidApiCall.Wait();
+            acoustidApiCall.Result.EnsureSuccessStatusCode();
+            
+            return JsonConvert.DeserializeObject<JObject>( acoustidApiCall.Result.Content.ReadAsStringAsync().Result );
+        }
+
+        /// <summary>
+        /// Using the Acoustid api call response, attempt to lookup the musicbrainz database via an api call
+        /// </summary>
+        /// <param name="acoustidJson">The raw response from acoustid api call</param>
+        /// <returns>Resulting JSon object of the http request</returns>
+        private JObject LookupByAcoustid( JObject acoustidJson )
+        {
+            var results = acoustidJson[ "results" ] as dynamic;
+            if( acoustidJson == null || acoustidJson[ "status" ]?.ToString() != "ok" || results == null || results.Count <= 0 )
+                return null;
+
+            var recordingId = results.First[ "recordings" ]?.First[ "id" ]?.ToString();
+            if( recordingId == null )
+                return null;
+
+            var musicBrainzApiCall = httpClient.GetAsync( string.Format( musicbrainz, recordingId ) );
+            musicBrainzApiCall.Wait();
+            musicBrainzApiCall.Result.EnsureSuccessStatusCode();
+
+            return JsonConvert.DeserializeObject<JObject>( musicBrainzApiCall.Result.Content.ReadAsStringAsync().Result );
+        }
+
+        /// <summary>
+        /// Does a known mapping from the foreign JSON object to dirty tags
+        /// </summary>
+        /// <param name="item">The mp3file reference to add dirty tags to</param>
+        /// <param name="musicbrainzJson">The raw musicbrainz api response</param>
+        private void MapMusicBrainzResponseToMp3( Mp3File item, JObject musicbrainzJson )
+        {
+            var artistInfoJson = musicbrainzJson[ "artist-credit" ].FirstOrDefault();
+            var albumInfoJson = musicbrainzJson[ "releases" ].FirstOrDefault();
+            var discInfoJson = albumInfoJson[ "media" ].FirstOrDefault();
+
+            item.AddDirtyTag( "Artists", artistInfoJson.Value<string>( "name" ), false );
+            item.AddDirtyTag( "Title", musicbrainzJson.Value<string>( "title" ), false );
+            item.AddDirtyTag( "Album", albumInfoJson.Value<string>( "title" ), false );
+            item.AddDirtyTag( "Year", albumInfoJson.Value<string>( "date" ), false );
+            item.AddDirtyTag( "Genres", "", false );
+            item.AddDirtyTag( "Composers", artistInfoJson.Value<string>( "name" ), false );
+            item.AddDirtyTag( "PERFORMER", artistInfoJson.Value<string>( "name" ), false );
+            item.AddDirtyTag( "AlbumArtists", artistInfoJson.Value<string>( "name" ), false );
+            item.AddDirtyTag( "Track", discInfoJson.Value<string>( "position" ), false );
+            item.AddDirtyTag( "TrackCount", discInfoJson.Value<string>( "track-count" ), false );
+            item.AddDirtyTag( "Disc", "", false );
+            item.AddDirtyTag( "DiscCount", discInfoJson[ "discs" ].Count().ToString(), false );
+            item.AddDirtyTag( "Comment", string.Empty, false );
+        }
         #endregion
     }
 }

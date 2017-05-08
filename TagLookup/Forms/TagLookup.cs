@@ -140,8 +140,8 @@ namespace TagLookup
             }
             foreach( var item in completedSuccessfullyList )
             {
+                log.Log( "Successfully processed " + Path.GetFileName( item.AbsolutePath ) + "\n" );
                 itemsToProcess.Remove( item );
-                log.Log( "Successfully processed " + item + "\n" );
             }
         }
 

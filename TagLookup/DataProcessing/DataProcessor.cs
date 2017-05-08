@@ -41,22 +41,44 @@ namespace TagLookup
         /// <returns></returns>
         public bool TryProcess( Mp3File itemToProcess, List<Website> targetWebsites )
         {
+            var success = false;
             log.Log( "Processing item " + Path.GetFileName( itemToProcess.AbsolutePath ) + "\n" );
-            // if( audioFingerprintLookup != null )
-            // {
-            //     audioFingerprintLookup.Lookup( itemToProcess );
-            // }
 
-            if( targetWebsites != null )
+            if( audioFingerprintLookup != null )
             {
-                foreach( var website in targetWebsites )
-                    httpScreenScrapping.Process( itemToProcess, website );
+                try
+                {
+                    log.Log( "Attempting audio fingerprint lookup.\n" );
+                    audioFingerprintLookup.Lookup( itemToProcess );
+                    log.Log( "Audio fingerprint lookup successful.\n" );
+                    success = true;
+                }
+                catch
+                {
+                    log.Log( "Audio fingerprint lookup failed.\n" );
+                }
+            }
+
+            if( targetWebsites != null && targetWebsites.Count > 0 )
+            {
+                try
+                {
+                    log.Log( "Attempting screen scraping.\n" );
+                    foreach( var website in targetWebsites )
+                        httpScreenScrapping.Process( itemToProcess, website );
+                    log.Log( "Screen scraping successful.\n" );
+                    success = true;
+                }
+                catch
+                {
+                    log.Log( "Screen scraping failed.\n" );
+                }
             }
 
             var mp3FileDialogue = new Mp3FileDialogue( itemToProcess );
             mp3FileDialogue.Show();
 
-            return true;
+            return success;
         }
     }
 }
